@@ -17,9 +17,9 @@ public class BeliefStateUpdate {
     final static private int DOWN = 2;
     final static private int LEFT = 3;
     final static private int END = 0;
-    //pre->cur, in the order of up, right, down, left, stay
-    private int[] xDir = new int[]{0,1,0,-1,0};
-    private int[] yDir = new int[]{-1,0,1,0,0};
+    //pre->cur, in the order of up, right, down, left
+    private int[] xDir = new int[]{0,1,0,-1};
+    private int[] yDir = new int[]{-1,0,1,0};
     private int rowLen = 3;
     private int colLen = 4;
     private double[][] beliefState;
@@ -39,38 +39,30 @@ public class BeliefStateUpdate {
                     continue;
                 }
                 double sumExpPreStates=0;
-                //iterate possible pre state, neighbors + self
-                for(int i=0; i<5; i++){
-                    int preC=c-xDir[i];
-                    int preR=r-yDir[i];
-
-                    double pPre;
-                    {
-                        if (yDir[i] == yDir[action] && xDir[i] == xDir[action]) {
-                            pPre = 0.8;
-                        }else if (xDir[i] == -xDir[action] && yDir[i] == -yDir[action]) {
-                            pPre = 0;
-                        } else {
-                            pPre = 0.1;
-                        }
+                //iterate possible pre state, neighbors
+                for(int i=0; i<4; i++){
+                    int tmpC=c-xDir[i];
+                    int tmpR=r-yDir[i];
+                    double p;
+                    if(c==tmpC+xDir[action] && r==tmpR+yDir[action]){
+                        p=0.8;
+                    }else if((tmpC-c!=0 && c==tmpC+xDir[action]) ||
+                            (tmpR-r!=0 && r==tmpR+yDir[action])){
+                        p=0;
+                    }else{
+                        p=0.1;
                     }
-
-                    //todo : handle cell next to end cells
-                    if(pPre!=0 && isTerminal(preR,preC)){
-                        pPre=0;
+                    if(p!=0 && isTerminal(tmpC,tmpR)){
+                        p=0;
                     }
 
                     double preBeliefStateCell;
-                    {
-                        if (isValidIndex(preR, preC)) {
-                            preBeliefStateCell = preBeliefState[preR][preC];
-                        } else {
-                            pPre=0;
-                            preBeliefStateCell = preBeliefState[r][c];
-                        }
+                    if (isValidIndex(tmpR, tmpC)) {
+                        preBeliefStateCell = preBeliefState[tmpR][tmpC];
+                    } else {
+                        preBeliefStateCell = preBeliefState[r][c];
                     }
-
-                    sumExpPreStates+=pPre*preBeliefStateCell;
+                    sumExpPreStates+=p * preBeliefStateCell;
                 }
 
                 beliefState[r][c]=getEvidenceProbability(r,c,obs)*sumExpPreStates;
@@ -85,7 +77,7 @@ public class BeliefStateUpdate {
             }
         }
 
-//        printBeliefStates();
+        printBeliefStates();
     }
 
 
@@ -187,29 +179,29 @@ public class BeliefStateUpdate {
      */
     public static void main(String[] args) {
 	// write your code here
-        double[] initBeliefState = new double[]{1,0,0,0,0,0,0,0,0};
+        double[] initBeliefState = new double[]{0.111,0.111,0.111,0.111,0.111,0.111,0.111,0.111,0.111};
         int[] actions, obs;
 
-        BeliefStateUpdate m1 = new BeliefStateUpdate();
-        actions=new int[]{UP,UP,UP};
-        obs = new int[]{2,2,2};
-        m1.updateBeliefState(initBeliefState, actions, obs);
-        m1.printBeliefStates();
-
-        BeliefStateUpdate m2 = new BeliefStateUpdate();
-        actions=new int[]{UP,UP,UP};
-        obs = new int[]{1,1,1};
-        m2.updateBeliefState(initBeliefState, actions, obs);
-        m2.printBeliefStates();
-
-        initBeliefState = new double[]{0,0,0,0,0,0,0,1,0};
-        BeliefStateUpdate m3 = new BeliefStateUpdate();
-        actions=new int[]{RIGHT,RIGHT,UP};
-        obs = new int[]{1,1,END};
-//        actions=new int[]{RIGHT,RIGHT};
-//        obs = new int[]{1,1};
-        m3.updateBeliefState(initBeliefState, actions, obs);
-        m3.printBeliefStates();
+//        BeliefStateUpdate m1 = new BeliefStateUpdate();
+//        actions=new int[]{UP,UP,UP};
+//        obs = new int[]{2,2,2};
+//        m1.updateBeliefState(initBeliefState, actions, obs);
+//        m1.printBeliefStates();
+//
+//        BeliefStateUpdate m2 = new BeliefStateUpdate();
+//        actions=new int[]{UP,UP,UP};
+//        obs = new int[]{1,1,1};
+//        m2.updateBeliefState(initBeliefState, actions, obs);
+//        m2.printBeliefStates();
+//
+//        initBeliefState = new double[]{0,0,0,0,0,0,0,1,0};
+//        BeliefStateUpdate m3 = new BeliefStateUpdate();
+//        actions=new int[]{RIGHT,RIGHT,UP};
+//        obs = new int[]{1,1,END};
+////        actions=new int[]{RIGHT,RIGHT};
+////        obs = new int[]{1,1};
+//        m3.updateBeliefState(initBeliefState, actions, obs);
+//        m3.printBeliefStates();
 
         initBeliefState = new double[]{1,0,0,0,0,0,0,0,0};
         BeliefStateUpdate m4 = new BeliefStateUpdate();
