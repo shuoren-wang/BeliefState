@@ -39,21 +39,18 @@ public class BeliefStateUpdate {
                     continue;
                 }
                 double sumExpPreStates=0;
-                //iterate possible pre state, neighbors
+                //iterate possible neighbors
                 for(int i=0; i<4; i++){
                     int tmpC=c-xDir[i];
                     int tmpR=r-yDir[i];
                     double p;
                     if(c==tmpC+xDir[action] && r==tmpR+yDir[action]){
                         p=0.8;
-                    }else if((tmpC-c!=0 && c==tmpC+xDir[action]) ||
-                            (tmpR-r!=0 && r==tmpR+yDir[action])){
+                    }else if((xDir[action]!=0 && c==tmpC-xDir[action]) ||
+                            (yDir[action]!=0 && r==tmpR-yDir[action])){
                         p=0;
                     }else{
                         p=0.1;
-                    }
-                    if(p!=0 && isTerminal(tmpC,tmpR)){
-                        p=0;
                     }
 
                     double preBeliefStateCell;
@@ -182,26 +179,17 @@ public class BeliefStateUpdate {
         double[] initBeliefState = new double[]{0.111,0.111,0.111,0.111,0.111,0.111,0.111,0.111,0.111};
         int[] actions, obs;
 
-//        BeliefStateUpdate m1 = new BeliefStateUpdate();
-//        actions=new int[]{UP,UP,UP};
-//        obs = new int[]{2,2,2};
-//        m1.updateBeliefState(initBeliefState, actions, obs);
-//        m1.printBeliefStates();
-//
-//        BeliefStateUpdate m2 = new BeliefStateUpdate();
-//        actions=new int[]{UP,UP,UP};
-//        obs = new int[]{1,1,1};
-//        m2.updateBeliefState(initBeliefState, actions, obs);
-//        m2.printBeliefStates();
-//
-//        initBeliefState = new double[]{0,0,0,0,0,0,0,1,0};
-//        BeliefStateUpdate m3 = new BeliefStateUpdate();
-//        actions=new int[]{RIGHT,RIGHT,UP};
-//        obs = new int[]{1,1,END};
-////        actions=new int[]{RIGHT,RIGHT};
-////        obs = new int[]{1,1};
-//        m3.updateBeliefState(initBeliefState, actions, obs);
-//        m3.printBeliefStates();
+        BeliefStateUpdate m1 = new BeliefStateUpdate();
+        actions=new int[]{UP,UP,UP};
+        obs = new int[]{2,2,2};
+        m1.updateBeliefState(initBeliefState, actions, obs);
+        m1.printBeliefStates();
+
+        BeliefStateUpdate m2 = new BeliefStateUpdate();
+        actions=new int[]{UP,UP,UP};
+        obs = new int[]{1,1,1};
+        m2.updateBeliefState(initBeliefState, actions, obs);
+        m2.printBeliefStates();
 
         initBeliefState = new double[]{1,0,0,0,0,0,0,0,0};
         BeliefStateUpdate m4 = new BeliefStateUpdate();
